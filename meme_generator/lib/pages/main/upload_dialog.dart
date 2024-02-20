@@ -69,9 +69,6 @@ class _UploadDialogState extends State<_UploadDialog> {
                           );
                         },
                         errorBuilder: (context, error, child) {
-                          _textFieldKey.currentState?.setValue(
-                              _textFieldKey.currentState?.value + 'invalidUrl');
-                          _formKey.currentState?.validate();
                           return Text(
                             'main.upload.error'.tr(),
                             style: Theme.of(context)
