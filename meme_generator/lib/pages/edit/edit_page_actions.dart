@@ -35,6 +35,7 @@ mixin _EditPageActions<T extends StatefulWidget> on State<T> {
       isBald.value = replaceDto.isBald;
       isItalic.value = replaceDto.isItalic;
       selectedColor.value = replaceDto.color;
+      size.value = replaceDto.size;
     }
 
     showAdaptiveDialog(
