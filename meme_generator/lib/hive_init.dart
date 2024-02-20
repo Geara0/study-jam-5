@@ -7,5 +7,8 @@ Future<void> _openBoxes() {
 }
 
 void _registerAdapters() {
+  Hive.registerAdapter(TemplateTypeAdapter());
+  Hive.registerAdapter(TemplatePartDtoAdapter());
+  Hive.registerAdapter(TemplateTextDtoAdapter());
   Hive.registerAdapter(TemplateDtoAdapter());
 }

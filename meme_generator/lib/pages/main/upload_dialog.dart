@@ -142,7 +142,10 @@ class _UploadDialogState extends State<_UploadDialog> {
       debugPrint('network');
     } else if (_image.value is MemoryImage) {
       final image = _image.value as MemoryImage;
-      widget.box.add(TemplateDto(bytes: image.bytes));
+      widget.box.add(TemplateDto(
+        bytes: image.bytes,
+        previewBytes: image.bytes,
+      ));
     }
 
     context.pop();

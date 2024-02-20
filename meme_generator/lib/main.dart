@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:meme_generator/dto/template/template_dto.dart';
+import 'package:meme_generator/dto/template_part_dto/template_part_dto.dart';
+import 'package:meme_generator/dto/template_part_dto/template_part_dto_type.dart';
+import 'package:meme_generator/dto/template_part_dto/template_text_dto/template_text_dto.dart';
 import 'package:meme_generator/router.dart';
 
 part 'theme.dart';

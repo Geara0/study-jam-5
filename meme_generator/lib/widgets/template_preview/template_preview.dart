@@ -16,7 +16,7 @@ class TemplatePreview extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         image: DecorationImage(
-          image: MemoryImage(template.bytes),
+          image: MemoryImage(template.previewBytes),
           fit: BoxFit.cover,
         ),
       ),
