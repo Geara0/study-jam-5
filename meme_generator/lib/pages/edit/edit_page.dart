@@ -102,18 +102,7 @@ class _EditPageState extends State<EditPage> with _EditPageActions {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          final preview = await screenshotController.capture();
-          _templates.add(TemplateDto(
-            bytes: widget.template.bytes,
-            previewBytes: preview!,
-            parts: _movingParts,
-          ));
-
-          if (context.mounted) {
-            context.pop();
-          }
-        },
+        onPressed: _save,
         label: const Text('edit.save').tr(),
         icon: const Icon(Icons.save),
       ),
@@ -121,5 +110,20 @@ class _EditPageState extends State<EditPage> with _EditPageActions {
     );
 
     return res;
+  }
+
+  void _save() async {
+    setState(() => currentIndex = -1);
+
+    final preview = await screenshotController.capture();
+    _templates.add(TemplateDto(
+      bytes: widget.template.bytes,
+      previewBytes: preview!,
+      parts: _movingParts,
+    ));
+
+    if (context.mounted) {
+      context.pop();
+    }
   }
 }
