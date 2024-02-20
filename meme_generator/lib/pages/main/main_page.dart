@@ -5,6 +5,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meme_generator/dto/template/template_dto.dart';
 import 'package:meme_generator/widgets/template_preview/template_preview.dart';
+import 'package:http/http.dart' as http;
 
 part 'upload_dialog.dart';
 

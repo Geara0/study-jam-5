@@ -137,9 +137,14 @@ class _UploadDialogState extends State<_UploadDialog> {
     return 'main.upload.invalidUrl'.tr();
   }
 
-  void _uploadImage() {
+  void _uploadImage() async {
     if (_image.value is NetworkImage) {
-      debugPrint('network');
+      final image = _image.value as NetworkImage;
+      final img = await http.get(Uri.parse(image.url));
+      widget.box.add(TemplateDto(
+        bytes: img.bodyBytes,
+        previewBytes: img.bodyBytes,
+      ));
     } else if (_image.value is MemoryImage) {
       final image = _image.value as MemoryImage;
       widget.box.add(TemplateDto(
@@ -148,6 +153,8 @@ class _UploadDialogState extends State<_UploadDialog> {
       ));
     }
 
-    context.pop();
+    if (mounted) {
+      context.pop();
+    }
   }
 }
