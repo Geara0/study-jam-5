@@ -1,0 +1,12 @@
+{
+  "main": {
+    "new": "Upload new template",
+    "upload": {
+      "or": "OR",
+      "memory": "Upload form memory",
+      "network": "Upload form network",
+      "invalidUrl": "Invalid url",
+      "error": "Oops, can't load this image. Try again"
+    }
+  }
+}
