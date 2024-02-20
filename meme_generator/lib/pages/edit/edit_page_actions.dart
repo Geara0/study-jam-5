@@ -6,13 +6,6 @@ mixin _EditPageActions<T extends StatefulWidget> on State<T> {
 
   _addText({int? replace}) {
     final controller = TextEditingController();
-    final colors = [
-      Colors.black,
-      Colors.white,
-      Colors.red,
-      Colors.blue,
-      Colors.purple
-    ];
 
     final selectedColor = ValueNotifier(colors.first);
 
@@ -58,50 +51,7 @@ mixin _EditPageActions<T extends StatefulWidget> on State<T> {
                     child: TextField(controller: controller),
                   ),
                   const SizedBox(height: 10),
-                  SizedBox(
-                    height: 28,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      itemCount: colors.length,
-                      itemBuilder: (context, i) {
-                        return ValueListenableBuilder(
-                          valueListenable: selectedColor,
-                          builder: (context, value, child) {
-                            Widget res = CircleAvatar(
-                              key: ValueKey('$i inner'),
-                              maxRadius: value == colors[i] ? 12 : 14,
-                              backgroundColor: colors[i],
-                            );
-
-                            res = CircleAvatar(
-                              key: ValueKey('$i outer'),
-                              maxRadius: 14,
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.tertiary,
-                              child: res,
-                            );
-
-                            res = SizedBox(
-                              width: 28,
-                              height: 28,
-                              child: GestureDetector(
-                                onTap: () => selectedColor.value = colors[i],
-                                child: res,
-                              ),
-                            );
-
-                            return res;
-                          },
-                          child: CircleAvatar(
-                            maxRadius: 14,
-                            backgroundColor: colors[i],
-                          ),
-                        );
-                      },
-                      separatorBuilder: (_, __) => const SizedBox(width: 5),
-                    ),
-                  ),
+                  ColorPicker(selectedColor: selectedColor),
                   ValueListenableBuilder(
                     valueListenable: size,
                     builder: (context, value, child) {
@@ -113,7 +63,6 @@ mixin _EditPageActions<T extends StatefulWidget> on State<T> {
                       );
                     },
                   ),
-                  const SizedBox(height: 10),
                   ValueListenableBuilder(
                     valueListenable: isBald,
                     builder: (context, value, child) {
@@ -205,12 +154,123 @@ mixin _EditPageActions<T extends StatefulWidget> on State<T> {
     );
   }
 
+  _addCircle({int? replace}) {
+    final selectedColor = ValueNotifier(colors.first);
+
+    final size = ValueNotifier(20.0);
+
+    void dispose() {
+      selectedColor.dispose();
+      size.dispose();
+    }
+
+    if (replace != null) {
+      final replaceDto = _movingParts[replace].value as TemplateCircleDto;
+      selectedColor.value = replaceDto.color;
+      size.value = replaceDto.radius;
+    }
+
+    showAdaptiveDialog(
+      context: context,
+      builder: (context) {
+        return Center(
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'edit.addCircle'.tr(),
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  const SizedBox(height: 10),
+                  ColorPicker(selectedColor: selectedColor),
+                  ValueListenableBuilder(
+                    valueListenable: size,
+                    builder: (context, value, child) {
+                      return Slider(
+                        min: 1,
+                        max: 100,
+                        value: value,
+                        onChanged: (newValue) => size.value = newValue,
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 350),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        FilledButton.tonal(
+                          onPressed: () {
+                            Future.delayed(
+                              const Duration(milliseconds: 300),
+                              () => dispose(),
+                            );
+                            context.pop();
+                          },
+                          child: const Text('edit.modal.no').tr(),
+                        ),
+                        const SizedBox(width: 5),
+                        FilledButton.tonal(
+                          onPressed: () {
+                            var dx = .0;
+                            var dy = .0;
+
+                            if (replace != null) {
+                              final replaceDto = _movingParts[replace];
+                              dx = replaceDto.dx;
+                              dy = replaceDto.dy;
+                            }
+
+                            final part = TemplatePartDto(
+                              value: TemplateCircleDto(
+                                color: selectedColor.value,
+                                radius: size.value,
+                              ),
+                              dx: dx,
+                              dy: dy,
+                            );
+
+                            setState(() {
+                              if (replace != null) {
+                                _movingParts[replace] = part;
+                              } else {
+                                _movingParts.add(part);
+                              }
+                            });
+
+                            Future.delayed(
+                              const Duration(milliseconds: 300),
+                              () => dispose(),
+                            );
+                            context.pop();
+                          },
+                          child: const Text('edit.modal.ok').tr(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void _edit() {
     if (currentIndex == -1) return;
 
     final type = _movingParts[currentIndex].type;
-    if (type == TemplateType.text) {
-      _addText(replace: currentIndex);
+    switch (type) {
+      case TemplateType.text:
+        _addText(replace: currentIndex);
+      case TemplateType.circle:
+        _addCircle(replace: currentIndex);
     }
   }
 

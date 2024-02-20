@@ -6,4 +6,6 @@ part 'template_part_dto_type.g.dart';
 enum TemplateType {
   @HiveField(0)
   text,
+  @HiveField(1)
+  circle,
 }

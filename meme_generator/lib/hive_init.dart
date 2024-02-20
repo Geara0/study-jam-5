@@ -10,5 +10,6 @@ void _registerAdapters() {
   Hive.registerAdapter(TemplateTypeAdapter());
   Hive.registerAdapter(TemplatePartDtoAdapter());
   Hive.registerAdapter(TemplateTextDtoAdapter());
+  Hive.registerAdapter(TemplateCircleDtoAdapter());
   Hive.registerAdapter(TemplateDtoAdapter());
 }

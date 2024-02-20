@@ -1,4 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:meme_generator/dto/template_part_dto/template_circle_dto/template_circle_dto.dart';
 import 'package:meme_generator/dto/template_part_dto/template_text_dto/template_text_dto.dart';
 
 import 'template_part_dto_type.dart';
@@ -21,11 +22,10 @@ class TemplatePartDto {
     required this.dy,
     required this.value,
   }) {
-    if (value is TemplateTextDto) {
-      type = TemplateType.text;
-      return;
-    }
-
-    throw 'unknown type';
+    type = switch (value) {
+      TemplateTextDto() => TemplateType.text,
+      TemplateCircleDto() => TemplateType.circle,
+      _ => throw 'unknown type',
+    };
   }
 }

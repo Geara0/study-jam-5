@@ -12,6 +12,7 @@
   },
   "edit": {
     "addText": "Add text",
+    "addCircle": "Add circle",
     "text": {
       "bald": "Bald",
       "italic": "Italic"
