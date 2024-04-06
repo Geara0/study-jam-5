@@ -20,11 +20,12 @@ class _UploadDialogState extends State<_UploadDialog> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Card(
+          child: ListView(
+            padding: const EdgeInsets.all(10),
+            shrinkWrap: true,
             children: [
               OutlinedButton.icon(
                 onPressed: _pickImage,
@@ -52,32 +53,38 @@ class _UploadDialogState extends State<_UploadDialog> {
                   return Column(
                     children: [
                       const SizedBox(height: 10),
-                      Image(
-                        image: value,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) {
-                            return child;
-                          }
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 400),
+                        child: Image(
+                          fit: BoxFit.contain,
+                          image: value,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            }
 
-                          return Center(
-                            child: CircularProgressIndicator.adaptive(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                  : null,
-                            ),
-                          );
-                        },
-                        errorBuilder: (context, error, child) {
-                          return Text(
-                            'main.upload.error'.tr(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(
-                                    color: Theme.of(context).colorScheme.error),
-                          );
-                        },
+                            return Center(
+                              child: CircularProgressIndicator.adaptive(
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            );
+                          },
+                          errorBuilder: (context, error, child) {
+                            return Text(
+                              'main.upload.error'.tr(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(
+                                      color:
+                                          Theme.of(context).colorScheme.error),
+                            );
+                          },
+                        ),
                       ),
                       const SizedBox(height: 10),
                       FilledButton(

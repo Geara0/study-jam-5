@@ -7,21 +7,29 @@ import 'package:meme_generator/dto/template_part_dto/template_text_dto/template_
 class TemplatePartBuilder extends StatelessWidget {
   const TemplatePartBuilder({
     required this.part,
+    this.onDragStart,
     required this.onDragEnd,
+    required this.sizeDecoder,
     super.key,
-  });
+  }) : assert(
+          onDragStart == null || onDragEnd != null,
+          'you cant pass onStart without onEnd',
+        );
 
   final TemplatePartDto part;
+  final VoidCallback? onDragStart;
   final DragEndCallback? onDragEnd;
+  final Size Function(double widthPercent, double heightPercent) sizeDecoder;
 
   @override
   Widget build(BuildContext context) {
     switch (part.type) {
       case TemplateType.text:
         final value = part.value as TemplateTextDto;
+        final size = sizeDecoder(value.size, value.size).width;
         final style = TextStyle(
           color: value.color,
-          fontSize: value.size,
+          fontSize: size,
           fontStyle: value.isItalic ? FontStyle.italic : FontStyle.normal,
           fontWeight: value.isBald ? FontWeight.w700 : null,
         );
@@ -35,6 +43,7 @@ class TemplatePartBuilder extends StatelessWidget {
             style: style,
             child: Text(value.text),
           ),
+          onDragStarted: onDragStart,
           onDragEnd: onDragEnd,
           childWhenDragging: const SizedBox.shrink(),
           child: Text(
@@ -44,18 +53,20 @@ class TemplatePartBuilder extends StatelessWidget {
         );
       case TemplateType.circle:
         final value = part.value as TemplateCircleDto;
+        final size = sizeDecoder(value.radius * 2, value.radius * 2);
 
         final res = Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(color: value.color),
           ),
-          height: value.radius * 2,
-          width: value.radius * 2,
+          height: size.height,
+          width: size.width,
         );
 
         return Draggable(
           feedback: res,
+          onDragStarted: onDragStart,
           onDragEnd: onDragEnd,
           childWhenDragging: const SizedBox.shrink(),
           child: res,

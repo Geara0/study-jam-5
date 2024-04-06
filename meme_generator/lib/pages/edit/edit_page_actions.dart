@@ -4,6 +4,9 @@ mixin _EditPageActions<T extends StatefulWidget> on State<T> {
   List<TemplatePartDto> get _movingParts;
   int currentIndex = -1;
 
+  Size _sizeDecoder(double widthPercent, double heightPercent);
+  Size _sizeEncoder(double widthGlobal, double heightGlobal);
+
   _addText({int? replace}) {
     final controller = TextEditingController();
 
@@ -28,7 +31,7 @@ mixin _EditPageActions<T extends StatefulWidget> on State<T> {
       isBald.value = replaceDto.isBald;
       isItalic.value = replaceDto.isItalic;
       selectedColor.value = replaceDto.color;
-      size.value = replaceDto.size;
+      size.value = _sizeDecoder(replaceDto.size, replaceDto.size).width;
     }
 
     showAdaptiveDialog(
@@ -120,7 +123,8 @@ mixin _EditPageActions<T extends StatefulWidget> on State<T> {
                                 color: selectedColor.value,
                                 isBald: isBald.value,
                                 isItalic: isItalic.value,
-                                size: size.value,
+                                size:
+                                    _sizeEncoder(size.value, size.value).width,
                               ),
                               dx: dx,
                               dy: dy,
@@ -228,7 +232,8 @@ mixin _EditPageActions<T extends StatefulWidget> on State<T> {
                             final part = TemplatePartDto(
                               value: TemplateCircleDto(
                                 color: selectedColor.value,
-                                radius: size.value,
+                                radius:
+                                    _sizeEncoder(size.value, size.value).width,
                               ),
                               dx: dx,
                               dy: dy,
@@ -277,6 +282,9 @@ mixin _EditPageActions<T extends StatefulWidget> on State<T> {
   void _delete() {
     if (currentIndex == -1) return;
 
-    setState(() => _movingParts.removeAt(currentIndex));
+    setState(() {
+      currentIndex = -1;
+      _movingParts.removeAt(currentIndex);
+    });
   }
 }

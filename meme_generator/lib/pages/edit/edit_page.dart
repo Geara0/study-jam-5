@@ -32,6 +32,61 @@ class _EditPageState extends State<EditPage> with _EditPageActions {
 
   late final screenshotController = ScreenshotController();
 
+  Color get _defaultBorderColor => Theme.of(context).colorScheme.tertiary;
+  late var _borderColor = _defaultBorderColor;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {});
+    });
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant EditPage oldWidget) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {});
+    });
+
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  Size _sizeDecoder(double widthPercent, double heightPercent) {
+    final imgSize = imageSize;
+
+    final res = Size(
+      widthPercent * imgSize.width,
+      heightPercent * imgSize.height,
+    );
+
+    return res;
+  }
+
+  @override
+  Size _sizeEncoder(double widthGlobal, double heightGlobal) {
+    final imgSize = imageSize;
+
+    final res = Size(
+      widthGlobal / imgSize.width,
+      heightGlobal / imgSize.height,
+    );
+
+    return res;
+  }
+
+  Size get imageSize {
+    Size? imageSize;
+
+    try {
+      imageSize =
+          (_imageKey.currentContext?.findRenderObject() as RenderBox?)?.size;
+    } catch (_) {}
+
+    return imageSize ?? Size.zero;
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget res = Center(
@@ -47,8 +102,10 @@ class _EditPageState extends State<EditPage> with _EditPageActions {
               ),
               for (var i = 0; i < _movingParts.length; i++) ...[
                 Positioned(
-                  left: _movingParts[i].dx,
-                  top: _movingParts[i].dy,
+                  left: _sizeDecoder(_movingParts[i].dx, _movingParts[i].dy)
+                      .width,
+                  top: _sizeDecoder(_movingParts[i].dx, _movingParts[i].dy)
+                      .height,
                   child: Container(
                     decoration: currentIndex == i
                         ? BoxDecoration(
@@ -56,7 +113,7 @@ class _EditPageState extends State<EditPage> with _EditPageActions {
                             border: Border.all(
                               strokeAlign: 1,
                               width: 3,
-                              color: Colors.pinkAccent,
+                              color: _borderColor,
                             ),
                           )
                         : null,
@@ -64,15 +121,27 @@ class _EditPageState extends State<EditPage> with _EditPageActions {
                       onLongPress: () => setState(() => currentIndex = i),
                       onTap: () => setState(() => currentIndex = i),
                       child: TemplatePartBuilder(
+                        sizeDecoder: _sizeDecoder,
                         part: _movingParts[i],
+                        onDragStart: () {
+                          setState(() => _borderColor = Colors.transparent);
+                        },
                         onDragEnd: (drag) {
                           final renderBox = _imageKey.currentContext
                               ?.findRenderObject() as RenderBox;
+
                           Offset offset = renderBox.globalToLocal(drag.offset);
+
+                          final percentage = _sizeEncoder(offset.dx, offset.dy);
+
                           setState(() {
+                            _borderColor = _defaultBorderColor;
+                            _movingParts[i] = TemplatePartDto(
+                              dx: percentage.width,
+                              dy: percentage.height,
+                              value: _movingParts[i].value,
+                            );
                             currentIndex = i;
-                            _movingParts[i].dy = offset.dy;
-                            _movingParts[i].dx = offset.dx;
                           });
                         },
                       ),

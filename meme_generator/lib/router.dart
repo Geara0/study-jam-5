@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meme_generator/dto/template/template_dto.dart';
 import 'package:meme_generator/pages/edit/edit_page.dart';
@@ -13,9 +14,13 @@ final router = GoRouter(
           GoRoute(
             path: 'edit',
             builder: (context, state) {
-              return EditPage(
-                template: state.extra as TemplateDto,
+              return OrientationBuilder(
                 key: state.pageKey,
+                builder: (context, orientation) {
+                  return EditPage(
+                    template: state.extra as TemplateDto,
+                  );
+                },
               );
             },
           ),
