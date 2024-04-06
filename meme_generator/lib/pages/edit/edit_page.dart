@@ -156,6 +156,7 @@ class _EditPageState extends State<EditPage> with _EditPageActions {
     );
 
     res = Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         actions: [
           IconButton(

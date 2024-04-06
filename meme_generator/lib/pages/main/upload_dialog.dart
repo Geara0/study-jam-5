@@ -20,12 +20,20 @@ class _UploadDialogState extends State<_UploadDialog> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Card(
-          child: ListView(
-            padding: const EdgeInsets.all(10),
-            shrinkWrap: true,
+      child: AlertDialog(
+        actions: [
+          ValueListenableBuilder(
+            valueListenable: _image,
+            builder: (context, value, _) {
+              return FilledButton(
+                onPressed: value != null ? _uploadImage : null,
+                child: const Text('main.new').tr(),
+              );
+            },
+          ),
+        ],
+        content: SingleChildScrollView(
+          child: Column(
             children: [
               OutlinedButton.icon(
                 onPressed: _pickImage,
@@ -85,11 +93,6 @@ class _UploadDialogState extends State<_UploadDialog> {
                             );
                           },
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      FilledButton(
-                        onPressed: _uploadImage,
-                        child: const Text('main.new').tr(),
                       ),
                     ],
                   );

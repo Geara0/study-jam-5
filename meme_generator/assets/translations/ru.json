@@ -13,6 +13,8 @@
   "edit": {
     "addText": "Добавить текст",
     "addCircle": "Добавить окружность",
+    "editText": "Edit text",
+    "editCircle": "Edit circle",
     "text": {
       "bald": "Жирный",
       "italic": "Курсив"
