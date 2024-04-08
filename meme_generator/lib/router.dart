@@ -14,11 +14,13 @@ final router = GoRouter(
           GoRoute(
             path: 'edit',
             builder: (context, state) {
+              final (index, template) = state.extra as (int, TemplateDto);
               return OrientationBuilder(
                 key: state.pageKey,
                 builder: (context, orientation) {
                   return EditPage(
-                    template: state.extra as TemplateDto,
+                    index: index,
+                    template: template,
                   );
                 },
               );

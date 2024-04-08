@@ -8,21 +8,29 @@
       "network": "Upload form network",
       "invalidUrl": "Invalid url",
       "error": "Oops, can't load this image. Try again"
-    }
+    },
+    "delete": "Delete"
   },
   "edit": {
+    "share": "Share",
+    "save": "Save",
+    "saveNew": "Save as new template",
     "addText": "Add text",
     "addCircle": "Add circle",
     "editText": "Edit text",
     "editCircle": "Edit circle",
     "text": {
+      "size": "Font size:",
       "bald": "Bald",
       "italic": "Italic"
+    },
+    "circle": {
+      "radius": "Radius:",
+      "border": "Border width:"
     },
     "modal": {
       "no": "Cancel",
       "ok": "Confirm"
-    },
-    "save": "Save"
+    }
   }
 }

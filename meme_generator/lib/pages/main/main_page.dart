@@ -42,13 +42,19 @@ class _MainPageState extends State<MainPage> {
       body: ValueListenableBuilder(
         valueListenable: templates.listenable(),
         builder: (context, value, child) {
-          final templates = value.values.toList(growable: false);
           return GridView.builder(
             padding: const EdgeInsets.all(10),
-            itemCount: templates.length,
+            itemCount: value.length,
             itemBuilder: (context, index) {
-              final i = templates.length - 1 - index;
-              return TemplatePreview(templates[i]);
+              final i = value.length - 1 - index;
+              return TemplatePreview(
+                index: i,
+                template: value.getAt(i)!,
+                onDelete: (context) {
+                  value.deleteAt(i);
+                  Navigator.of(context).pop();
+                },
+              );
             },
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 150,

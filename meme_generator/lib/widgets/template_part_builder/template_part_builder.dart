@@ -54,11 +54,12 @@ class TemplatePartBuilder extends StatelessWidget {
       case TemplateType.circle:
         final value = part.value as TemplateCircleDto;
         final size = sizeDecoder(value.radius * 2, value.radius * 2);
+        final border = sizeDecoder(value.borderWidth, value.borderWidth);
 
         final res = Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: value.color),
+            border: Border.all(color: value.color, width: border.width),
           ),
           height: size.height,
           width: size.width,

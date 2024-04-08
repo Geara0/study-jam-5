@@ -11,7 +11,6 @@ mixin _EditPageActions<T extends StatefulWidget> on State<T> {
     final controller = TextEditingController();
 
     final selectedColor = ValueNotifier(colors.first);
-
     final isBald = ValueNotifier(false);
     final isItalic = ValueNotifier(false);
 
@@ -42,51 +41,60 @@ mixin _EditPageActions<T extends StatefulWidget> on State<T> {
             'edit.${replace == null ? 'add' : 'edit'}Text'.tr(),
             style: Theme.of(context).textTheme.headlineSmall,
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 350),
-                child: TextField(controller: controller),
+          content: Scrollbar(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 350),
+                    child: TextField(controller: controller),
+                  ),
+                  const SizedBox(height: 10),
+                  Center(
+                    child: ColorPicker(selectedColor: selectedColor),
+                  ),
+                  const SizedBox(height: 10),
+                  const Text('edit.text.size').tr(),
+                  ValueListenableBuilder(
+                    valueListenable: size,
+                    builder: (context, value, child) {
+                      return Slider(
+                        min: 1,
+                        max: 100,
+                        value: value,
+                        onChanged: (newValue) => size.value = newValue,
+                      );
+                    },
+                  ),
+                  ValueListenableBuilder(
+                    valueListenable: isBald,
+                    builder: (context, value, child) {
+                      return CheckboxListTile(
+                        title: const Text('edit.text.bald').tr(),
+                        value: value,
+                        onChanged: (_) => setState(() {
+                          isBald.value = !value;
+                        }),
+                      );
+                    },
+                  ),
+                  ValueListenableBuilder(
+                    valueListenable: isItalic,
+                    builder: (context, value, child) {
+                      return CheckboxListTile(
+                        title: const Text('edit.text.italic').tr(),
+                        value: value,
+                        onChanged: (_) => setState(() {
+                          isItalic.value = !value;
+                        }),
+                      );
+                    },
+                  ),
+                ],
               ),
-              const SizedBox(height: 10),
-              ColorPicker(selectedColor: selectedColor),
-              ValueListenableBuilder(
-                valueListenable: size,
-                builder: (context, value, child) {
-                  return Slider(
-                    min: 1,
-                    max: 100,
-                    value: value,
-                    onChanged: (newValue) => size.value = newValue,
-                  );
-                },
-              ),
-              ValueListenableBuilder(
-                valueListenable: isBald,
-                builder: (context, value, child) {
-                  return CheckboxListTile(
-                    title: const Text('edit.text.bald').tr(),
-                    value: value,
-                    onChanged: (_) => setState(() {
-                      isBald.value = !value;
-                    }),
-                  );
-                },
-              ),
-              ValueListenableBuilder(
-                valueListenable: isItalic,
-                builder: (context, value, child) {
-                  return CheckboxListTile(
-                    title: const Text('edit.text.italic').tr(),
-                    value: value,
-                    onChanged: (_) => setState(() {
-                      isItalic.value = !value;
-                    }),
-                  );
-                },
-              ),
-            ],
+            ),
           ),
           actions: [
             FilledButton.tonal(
@@ -147,18 +155,21 @@ mixin _EditPageActions<T extends StatefulWidget> on State<T> {
 
   _addCircle({int? replace}) {
     final selectedColor = ValueNotifier(colors.first);
-
     final size = ValueNotifier(20.0);
+    final borderWidth = ValueNotifier(1.0);
 
     void dispose() {
       selectedColor.dispose();
       size.dispose();
+      borderWidth.dispose();
     }
 
     if (replace != null) {
       final replaceDto = _movingParts[replace].value as TemplateCircleDto;
       selectedColor.value = replaceDto.color;
       size.value = _sizeDecoder(replaceDto.radius, replaceDto.radius).width;
+      borderWidth.value =
+          _sizeDecoder(replaceDto.borderWidth, replaceDto.borderWidth).width;
     }
 
     showAdaptiveDialog(
@@ -169,22 +180,46 @@ mixin _EditPageActions<T extends StatefulWidget> on State<T> {
             'edit.${replace == null ? 'add' : 'edit'}Circle'.tr(),
             style: Theme.of(context).textTheme.headlineSmall,
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ColorPicker(selectedColor: selectedColor),
-              ValueListenableBuilder(
-                valueListenable: size,
-                builder: (context, value, child) {
-                  return Slider(
-                    min: 1,
-                    max: 100,
-                    value: value,
-                    onChanged: (newValue) => size.value = newValue,
-                  );
-                },
+          content: Scrollbar(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Center(
+                    child: ColorPicker(selectedColor: selectedColor),
+                  ),
+                  const SizedBox(height: 10),
+                  const Text('edit.circle.radius').tr(),
+                  ValueListenableBuilder(
+                    valueListenable: size,
+                    builder: (context, value, child) {
+                      return Slider(
+                        min: 1,
+                        max: 100,
+                        value: value,
+                        onChanged: (newValue) => size.value = newValue,
+                        label: '$value',
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  const Text('edit.circle.border').tr(),
+                  ValueListenableBuilder(
+                    valueListenable: borderWidth,
+                    builder: (context, value, child) {
+                      return Slider(
+                        min: 1,
+                        max: 20,
+                        value: value,
+                        onChanged: (newValue) => borderWidth.value = newValue,
+                        label: '$value',
+                      );
+                    },
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
           actions: [
             FilledButton.tonal(
@@ -213,6 +248,9 @@ mixin _EditPageActions<T extends StatefulWidget> on State<T> {
                   value: TemplateCircleDto(
                     color: selectedColor.value,
                     radius: _sizeEncoder(size.value, size.value).width,
+                    borderWidth:
+                        _sizeEncoder(borderWidth.value, borderWidth.value)
+                            .width,
                   ),
                   dx: dx,
                   dy: dy,
@@ -256,8 +294,8 @@ mixin _EditPageActions<T extends StatefulWidget> on State<T> {
     if (currentIndex == -1) return;
 
     setState(() {
-      currentIndex = -1;
       _movingParts.removeAt(currentIndex);
+      currentIndex = -1;
     });
   }
 }

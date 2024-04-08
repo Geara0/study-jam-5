@@ -9,9 +9,12 @@ class TemplateCircleDto {
   double radius;
   @HiveField(1)
   late int colorValue;
+  @HiveField(2)
+  double borderWidth;
 
   TemplateCircleDto({
     required this.radius,
+    required this.borderWidth,
     Color color = Colors.black,
   }) {
     colorValue = color.value;

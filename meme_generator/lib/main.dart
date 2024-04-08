@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:meme_generator/dto/template/template_dto.dart';
 import 'package:meme_generator/dto/template_part_dto/template_circle_dto/template_circle_dto.dart';
@@ -21,6 +22,17 @@ void main() async {
     EasyLocalization.ensureInitialized(),
     Hive.initFlutter().then((_) => _openBoxes()),
   ]);
+
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    systemStatusBarContrastEnforced: true,
+    systemNavigationBarContrastEnforced: true,
+    systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarDividerColor: Colors.transparent,
+  ));
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.edgeToEdge,
+    overlays: [SystemUiOverlay.top],
+  );
 
   runApp(
     EasyLocalization(
